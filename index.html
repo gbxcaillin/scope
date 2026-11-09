@@ -1355,6 +1355,25 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     rule();
     text("Set fees include GST and the super share, charged as today (super initial capped at $4,950 per client). All ongoing fees combined are capped at $10,000 a year per client (" + capLabel() + " here). " +
          "Prices are proposed starting points and must be confirmed in the client's written fee quote. Internal file note, not advice.", { size: 8, color: MUTED });
+
+    // ===== Part 3: document request email, for the file note =====
+    var em = docEmail();
+    doc.addPage(); y = 18;
+    text("Brightday Australia", { size: 9, color: MAG, bold: true, after: 3 });
+    text("Document request email", { size: 17, bold: true, color: NAVY, after: 2 });
+    text("File note: copy of the document request email generated on " + new Date().toLocaleDateString("en-AU") + " for " + client +
+         " (" + (em.anyTicked ? "ticked documents only" : "every document for the modules in scope") + "). Check it matches what was sent.",
+         { size: 9.5, color: MUTED, after: 3 });
+    rule();
+    em.text.split("\n").forEach(function (ln) {
+      if (/^-{10,}$/.test(ln)) { y += 1; rule(); return; }
+      if (!ln) { y += 2; return; }
+      var heading = ln === ln.toUpperCase() && /[A-Z]/.test(ln) && !/^\d/.test(ln);
+      var detail = /^ {3}/.test(ln);
+      text(ln.trim(), heading ? { size: 10.5, bold: true, color: NAVY, after: 1 }
+                    : detail ? { size: 9, color: [70, 76, 92], x: M + 5, width: CW - 5, after: 0.6 }
+                    : { size: 9.5, after: 0.8 });
+    });
     var pages = doc.getNumberOfPages();
     for (var p = 1; p <= pages; p++) {
       doc.setPage(p); doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor.apply(doc, MUTED);
