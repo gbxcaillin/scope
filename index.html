@@ -909,142 +909,142 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       fu: ["Guardians they would name", "Their solicitor", "Wishes and family dynamics (meeting 2, face to face)"] }
   ];
   // ---------- Reverse fact find: what each document gives us, why, and what the client can tell us instead ----------
-  // DOCINFO[document] = [what we take from it, how we use it, or just tell us]
+  // DOCINFO[document] = [what we take from it (dot points), how we use it, or just tell us]
   var DOCINFO = {
     "Latest tax return or notice of assessment, each partner": [
-      "Your taxable income, the tax you paid, and any deductions or other income (rent, dividends, business).",
+      ["Taxable income", "Tax paid", "Deductions claimed", "Other income (rent, dividends, business)"],
       "To set your marginal tax rate, which drives almost every recommendation: where money is held, whose name it's in, and whether super contributions make sense.",
       "Each person's taxable income for last year and any income other than salary."],
     "2–3 recent payslips each": [
-      "Your current salary, how often you're paid, tax withheld, and any salary sacrifice or extra super already going in.",
+      ["Current salary", "How often you're paid", "Tax withheld", "Salary sacrifice or extra super already going in"],
       "To confirm your take-home pay for the cash flow, and to check your contribution caps before we suggest any extra super.",
       "Each person's gross salary, take-home pay per pay, and any salary sacrifice amount."],
     "3 months of statements for every bank and credit card account": [
-      "Your regular income, everyday spending, and recurring bills and subscriptions.",
+      ["Regular income", "Everyday spending", "Recurring bills and subscriptions"],
       "To build a 12-month picture of where your money goes, and work out what you can realistically put toward your goals.",
       "Your monthly take-home income and a rough monthly figure for housing, bills, groceries, transport, kids and discretionary spending."],
     "Any budget already kept": [
-      "How you already think about and track your spending.",
+      ["How you already track your spending", "The categories and limits you use"],
       "To build on what already works for you rather than start from scratch.",
       "Nothing extra needed if you don't keep one."],
     "Centrelink income statement, if receiving payments": [
-      "Which payments you receive and how much.",
+      ["Which payments you receive", "How much, and how often"],
       "Some strategies change the income or assets Centrelink counts, so we check we won't reduce your payments.",
       "The payment type, the fortnightly amount and who receives it."],
     "Latest statement for each loan": [
-      "Lender, balance, interest rate, repayment amount, and whether it's fixed or variable.",
+      ["Lender", "Balance", "Interest rate", "Repayment amount", "Fixed or variable, and any fixed end date"],
       "To compare your rate with the market, see how fast you're paying it down, and decide what to pay off first.",
       "For each loan: the lender, balance, rate, monthly repayment and when any fixed rate ends."],
     "Offset and redraw statements": [
-      "How much sits in offset or redraw, and how it moves through the month.",
+      ["Offset and redraw balances", "How the balance moves through the month"],
       "Money in offset reduces interest, so we look at whether your savings are working as hard as they can.",
       "The current offset and redraw balances for each loan."],
     "Credit card statements": [
-      "Limits, balances, interest rates, and whether the balance is cleared each month.",
+      ["Card limits", "Balances", "Interest rates", "Whether the balance is cleared each month"],
       "Card debt is usually the most expensive debt you have, and limits count against borrowing power even when unused.",
       "Each card's limit, the usual balance, and whether you pay it off in full."],
     "HELP balance from myGov": [
-      "Your HELP (HECS) balance.",
+      ["HELP (HECS) balance"],
       "Repayments come out through tax, and the balance affects borrowing power, so we decide whether paying it early is worth it.",
       "The current balance for each person."],
     "Recent property valuation or estimate": [
-      "What your home is worth now.",
+      ["Current value of your home"],
       "To work out your equity and loan-to-value ratio, which affects refinancing options and what you could borrow against.",
       "Your best estimate of its value, or a recent online estimate."],
     "Loan contract for any fixed loan (break costs)": [
-      "The fixed-rate terms and how break costs are worked out.",
+      ["Fixed rate and end date", "How break costs are worked out"],
       "If changing loans makes sense, we need to know what it would cost to leave the fixed rate early.",
       "The fixed rate, its end date, and the lender's break-cost quote if you have one."],
     "Property manager annual summary or rental statements": [
-      "Rent received, management fees and property expenses.",
+      ["Rent received", "Management fees", "Property expenses"],
       "To work out what the property really earns after costs, and whether it's paying its way.",
       "Weekly rent, how many weeks a year it's let, and the main yearly costs."],
     "Loan statements": [
-      "Balance, interest rate and repayment type (interest-only or principal and interest).",
+      ["Balance", "Interest rate", "Repayment type (interest-only or principal and interest)"],
       "To check the loan is structured for tax and cash flow, and how interest-only periods affect you.",
       "For each investment loan: lender, balance, rate, repayment type and any interest-only end date."],
     "Depreciation schedule": [
-      "Depreciation you can claim on the building and fittings.",
+      ["Depreciation on the building", "Depreciation on fittings and fixtures"],
       "These are non-cash deductions, so they change the after-tax return of the property.",
       "Whether you have one, and roughly what you claim each year."],
     "Purchase contract and settlement statement": [
-      "Purchase price, date, and the costs of buying.",
+      ["Purchase price", "Purchase date", "Buying costs (stamp duty, legal fees)", "Whose name it's in"],
       "These set the cost base for capital gains tax if you sell, and show how the purchase was funded.",
       "The purchase price, date, stamp duty, and whose name it's in."],
     "Rates, strata and landlord insurance notices": [
-      "The fixed yearly costs of holding the property.",
+      ["Council rates", "Strata fees", "Landlord insurance"],
       "To complete the true cost of ownership and check you're covered.",
       "The yearly amounts for council rates, strata, water and landlord insurance."],
     "Rental schedule from the last tax return": [
-      "The income and deductions you claimed on the property.",
+      ["Rental income declared", "Deductions claimed", "Net rental profit or loss"],
       "To see how the property affects your tax, and check nothing is being missed.",
       "Last year's net rental profit or loss."],
     "Recent valuation": [
-      "What the property is worth now.",
+      ["Current value of the property"],
       "To work out equity, the capital gain to date, and options to sell, hold or borrow against it.",
       "Your best estimate, or a recent online estimate."],
     "Holdings statements from each platform or broker": [
-      "What you own, where it's held, its value and whose name it's in.",
+      ["What you own", "Where it's held", "Current value", "Whose name it's in"],
       "To check the mix suits your risk profile and goals, spot overlap and fees, and decide whether to consolidate.",
       "A list of what you hold (shares, funds, term deposits), the rough value of each, and whose name it's in."],
     "Cost base records (reports for when assets were bought and for how much)": [
-      "What you paid for each investment and when.",
+      ["What you paid for each investment", "When you bought it"],
       "Selling or moving investments can trigger capital gains tax, so we need these before suggesting any changes.",
       "Roughly what you paid and when, for anything we might sell. We can often get this from the platform with your permission."],
     "Margin loan or crypto exchange statements": [
-      "Any borrowing against investments, and any crypto holdings.",
+      ["Margin loan balance and lender", "Crypto holdings and values"],
       "Gearing raises risk and needs to fit your risk profile; crypto has its own tax and risk treatment.",
       "The margin loan balance and the rough value of any crypto."],
     "Tax returns and notices of assessment, last 2 years, both partners": [
-      "Income, deductions and tax paid over two years.",
+      ["Taxable income for each year", "Deductions claimed", "Tax paid", "Any unusual or one-off items"],
       "To find tax savings, such as who should own new investments, and to check for unusual years.",
       "Each person's taxable income for the last two years and any large one-off items."],
     "Carry-forward contribution figures from myGov": [
-      "Any unused concessional (before-tax) super cap you can carry forward from earlier years.",
+      ["Unused concessional (before-tax) cap from earlier years", "Your total super balance"],
       "This can let you make a larger tax-deductible super contribution in one year, often a big tax saving.",
       "Just log in to myGov and send us the figure shown under 'carry-forward concessional contributions', or let us know to help you find it."],
     "Super contribution statements": [
-      "What has gone into super this year, from your employer and from you.",
+      ["Employer contributions this year", "Personal and salary sacrifice contributions this year"],
       "So any extra contribution we suggest stays within the caps and avoids extra tax.",
       "Your employer and any personal contributions so far this financial year."],
     "Private health insurance tax statement": [
-      "Your hospital cover and the rebate you receive.",
+      ["Whether you hold hospital cover", "Rebate received"],
       "Without hospital cover, higher earners pay the Medicare levy surcharge, so we check whether cover saves you money.",
       "Whether each person has hospital cover."],
     "Trust or company financials, if relevant": [
-      "Income, distributions and assets held in a trust or company.",
+      ["Income", "Distributions or dividends paid", "Assets held"],
       "Structures change who pays tax on what, so we include them in the overall plan.",
       "The structure's name, what it holds, and roughly what it pays out each year."],
     "School fee schedules (this year plus published increases)": [
-      "Current fees and how they're expected to rise.",
+      ["Current fees", "Expected yearly increases"],
       "To project the total cost to Year 12 and plan how to fund it.",
       "Each child's school, year level and current yearly fees."],
     "Statements for education bonds, investment bonds or school savings": [
-      "What you've already set aside for education, and how it's invested.",
+      ["Balance set aside for education", "How it's invested"],
       "So we count what's already there before suggesting anything new.",
       "The type of account and its current balance."],
     "Current wills and powers of attorney": [
-      "Who inherits, who acts for you, and when they were last updated.",
+      ["Who inherits", "Who acts for you (executor and attorney)", "When they were last updated"],
       "To check your plan passes your assets the way you want, and flag anything outdated.",
       "Whether each of you has a will and powers of attorney, roughly when they were done, and the main wishes."],
     "Guardianship documents": [
-      "Who you've named to care for your children.",
+      ["Who you've named as guardians"],
       "So any insurance and estate recommendations support the people who'd be looking after them.",
       "Whether guardians are named, and who."],
     "Super nomination confirmations": [
-      "Who receives your super if you die, and whether that nomination is binding and current.",
+      ["Who receives your super if you die", "Whether the nomination is binding", "Whether it's still current"],
       "Super doesn't automatically follow your will, so we check it goes where you intend.",
       "Who is nominated on each super fund, and whether it's binding. We can often check this with the fund for you."],
     "Insurance policy schedules": [
-      "Cover types, sums insured, owners and premiums.",
+      ["Cover types", "Sums insured", "Policy owners", "Premiums"],
       "To make sure insurance pays out to the right people in a tax-effective way.",
       "For each policy: the type, amount, owner and premium."],
     "Trust deeds and company constitutions": [
-      "Who controls the trust or company and what happens to it on death.",
+      ["Who controls the trust or company", "Who benefits", "What happens to it on death"],
       "Assets in structures don't pass under your will, so we look at control and succession separately.",
       "The structure's name, who controls it, and who benefits."],
     "Property titles": [
-      "Whose name each property is in, and how (jointly or as tenants in common).",
+      ["Whose name each property is in", "How it's held (jointly or as tenants in common)"],
       "Ownership decides whether a property passes automatically to a co-owner or through your will.",
       "How each property is owned and in whose names."]
   };
@@ -1369,9 +1369,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       if (/^-{10,}$/.test(ln)) { y += 1; rule(); return; }
       if (!ln) { y += 2; return; }
       var heading = ln === ln.toUpperCase() && /[A-Z]/.test(ln) && !/^\d/.test(ln);
-      var detail = /^ {3}/.test(ln);
-      text(ln.trim(), heading ? { size: 10.5, bold: true, color: NAVY, after: 1 }
-                    : detail ? { size: 9, color: [70, 76, 92], x: M + 5, width: CW - 5, after: 0.6 }
+      var detail = /^ {3}/.test(ln), bullet = /^ {6}/.test(ln);
+      text(ln.trim().replace(/^•/, "-"), heading ? { size: 10.5, bold: true, color: NAVY, after: 1 }
+                    : bullet ? { size: 9, color: [70, 76, 92], x: M + 10, width: CW - 10, after: 0.4 }
+                    : detail ?{ size: 9, color: [70, 76, 92], x: M + 5, width: CW - 5, after: 0.6 }
                     : { size: 9.5, after: 0.8 });
     });
     var pages = doc.getNumberOfPages();
@@ -1423,7 +1424,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         var info = DOCINFO[d];
         lines.push((i + 1) + ") " + d);
         if (info) {
-          lines.push("   What we take from it: " + info[0]);
+          lines.push("   What we take from it:");
+          info[0].forEach(function (b) { lines.push("      • " + b); });
           lines.push("   How we use it: " + info[1]);
           lines.push("   Or just tell us: " + info[2]);
         }
