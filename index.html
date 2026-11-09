@@ -156,9 +156,10 @@ body { padding-bottom: 96px; }
   <div class="layout">
     <div class="panel">
       <div class="bal">
-        <div class="row"><label for="balNum">Super balance</label><span class="numwrap">$<input type="number" id="balNum" class="numbox" value="350000" min="0" step="1000"></span></div>
-        <input type="range" id="bal" min="20000" max="1500000" step="10000" value="350000" aria-label="Super balance slider">
+        <div class="row"><label for="nClients">Number of clients</label><select id="nClients" class="numbox"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+        <p class="hint-line" id="capHint">Caps apply per client: $4,950 initial from super and $10,000 ongoing a year.</p>
       </div>
+      <div id="bals"></div>
       <p class="label">Scope</p>
       <div class="scope" id="scope">
         <label class="fixed"><input type="checkbox" checked disabled><span>Super and insurance</span><span class="price">always</span></label>
@@ -196,7 +197,7 @@ body { padding-bottom: 96px; }
         <div class="price-grid" id="priceGrid"></div>
         <p class="note">Changes apply straight away and last until the page is reloaded.</p>
       </details>
-      <p class="note">Set fees include GST and the super share, which is charged as today (3.3% of the balance, capped at $4,950; ongoing 1.1%). Investments outside super are charged 1.1% a year, deducted from the portfolio. All ongoing fees across every product and service are capped at $10,000 a year combined, shared in proportion. Prices are the proposed starting points from the holistic advice proposal.</p>
+      <p class="note">Set fees include GST and the super share, which is charged as today (3.3% of each client's balance, capped at $4,950 per client; ongoing 1.1%). Investments outside super are charged 1.1% a year, deducted from the portfolio. All ongoing fees across every product and service are capped at $10,000 a year per client (so $20,000 for a couple), applied to the combined total and shared in proportion. Prices are the proposed starting points from the holistic advice proposal.</p>
     </div>
   </div>
 
@@ -669,25 +670,83 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   grid.innerHTML = h + '</div>';
 
   function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) && v > 0 ? v : 0; }
+
+  // ---------- Clients and super balances ----------
+  var MAX_CLIENTS = 4, BAL_DEFAULTS = [350000, 250000, 150000, 150000];
+  var balsEl = document.getElementById("bals");
+  for (var ci = 1; ci <= MAX_CLIENTS; ci++) {
+    balsEl.insertAdjacentHTML("beforeend",
+      '<div class="bal" id="balWrap' + ci + '"' + (ci > 1 ? " hidden" : "") + '>' +
+      '<div class="row"><label for="balNum' + ci + '" id="balLbl' + ci + '">Super balance</label><span class="numwrap">$<input type="number" id="balNum' + ci + '" class="numbox" value="' + BAL_DEFAULTS[ci - 1] + '" min="0" step="1000"></span></div>' +
+      '<input type="range" id="bal' + ci + '" min="0" max="1500000" step="10000" value="' + BAL_DEFAULTS[ci - 1] + '" aria-label="Client ' + ci + ' super balance slider"></div>');
+  }
+  function nClients() { var n = parseInt(document.getElementById("nClients").value, 10); return n >= 1 && n <= MAX_CLIENTS ? n : 1; }
+  function bals() { var out = []; for (var i = 1; i <= nClients(); i++) out.push(num("balNum" + i)); return out; }
+  function oCap() { return O_CAP * nClients(); }
+  function capLabel() { var n = nClients(); return money.format(oCap()) + (n > 1 ? " (" + n + " × $10,000)" : ""); }
+  function syncClients() {
+    var n = nClients();
+    for (var i = 1; i <= MAX_CLIENTS; i++) {
+      document.getElementById("balWrap" + i).hidden = i > n;
+      document.getElementById("balLbl" + i).textContent = n > 1 ? "Client " + i + " super balance" : "Super balance";
+    }
+    document.getElementById("capHint").textContent = "Caps apply per client: $4,950 initial from super each, and ongoing fees capped at " + capLabel() + " a year combined.";
+  }
+  // Super share across all clients: 3.3% of each balance capped at $4,950 each; ongoing 1.1% of each balance.
+  function superInit(b) { return b.reduce(function (a, x) { return a + Math.min(x * I_RATE, I_CAP); }, 0); }
+  function superOng(b) { return b.reduce(function (a, x) { return a + x * O_RATE; }, 0); }
+
   // ongSet = set or module ongoing fees (includes the super share); port = 1.1% of investments outside super.
-  // The $10,000 cap applies to everything combined, shared in proportion.
-  function split(initTotal, ongSet, bal, port) {
+  // The ongoing cap ($10,000 per client) applies to everything combined, shared in proportion.
+  function split(initTotal, ongSet, b, port) {
     port = port || 0;
-    var sI = Math.min(bal * I_RATE, I_CAP), sO = bal * O_RATE;
-    var raw = ongSet + port, capCut = Math.max(0, raw - O_CAP);
-    if (capCut > 0) { var k = O_CAP / raw; ongSet *= k; port *= k; }
+    var sI = superInit(b), sO = superOng(b), cap = oCap();
+    var raw = ongSet + port, capCut = Math.max(0, raw - cap);
+    if (capCut > 0) { var k = cap / raw; ongSet *= k; port *= k; }
     var iS = Math.min(sI, initTotal), oS = Math.min(sO, ongSet);
-    return { i: initTotal, o: ongSet + port, iS: iS, iP: initTotal - iS, oS: oS, oF: port, oP: ongSet - oS, cut: capCut };
+    return { i: initTotal, o: ongSet + port, iS: iS, iP: initTotal - iS, oS: oS, oF: port, oP: ongSet - oS, cut: capCut,
+      // Per-client super shares, in proportion to each client's own super amount (whole dollars, last client takes rounding).
+      iSc: shareOut(b.map(function (x) { return Math.min(x * I_RATE, I_CAP); }), iS),
+      oSc: shareOut(b.map(function (x) { return x * O_RATE; }), oS) };
+  }
+  function shareOut(w, total) {
+    var sum = w.reduce(function (a, x) { return a + x; }, 0), acc = 0;
+    return w.map(function (x, i) {
+      var amt = i === w.length - 1 ? total - acc : (sum > 0 ? Math.round(total * x / sum) : 0);
+      acc += amt; return amt;
+    });
+  }
+  // Fee breakdown rows: [label, amount, dot class]. One client keeps the original wording;
+  // two or more show each client's super share, then the joint amounts.
+  function feeRows(r) {
+    var multi = r.iSc.length > 1, init = [], ong = [];
+    if (multi) {
+      r.iSc.forEach(function (a, i) { init.push(["Client " + (i + 1) + " (super)", a, "s"]); });
+      init.push(["Joint (out of pocket)", r.iP, "o"]);
+      r.oSc.forEach(function (a, i) { ong.push(["Client " + (i + 1) + " (super)", a, "s"]); });
+      if (r.oF > 0) ong.push(["Joint (investments outside super, 1.1%)", r.oF, "p"]);
+      ong.push(["Joint (out of pocket)", r.oP, "o"]);
+    } else {
+      init.push(["From super", r.iS, "s"], ["Out of pocket", r.iP, "o"]);
+      ong.push(["From super", r.oS, "s"]);
+      if (r.oF > 0) ong.push(["From investments outside super (1.1%)", r.oF, "p"]);
+      ong.push(["Out of pocket", r.oP, "o"]);
+    }
+    return { init: init, ong: ong };
   }
   function body(r) {
+    var f = feeRows(r), multi = r.iSc.length > 1;
+    function row(x, pre) {
+      var lbl = multi ? x[0] : pre + " " + x[0].charAt(0).toLowerCase() + x[0].slice(1);
+      return '<tr><td><span class="dot ' + x[2] + '"></span>' + lbl + '</td><td class="num">' + money.format(x[1]) +
+        (x[2] === "o" && pre === "Ongoing" ? ' <span style="color:var(--muted)">(' + money.format(x[1] / 12) + '/mth)</span>' : '') + '</td></tr>';
+    }
+    function sub(t) { return multi ? '<tr><td colspan="2" style="font-weight:700;color:var(--ink);padding-top:10px">' + t + '</td></tr>' : ''; }
     return '<div class="big"><div><span>Initial</span><b>' + money.format(r.i) + '</b></div><div><span>Ongoing a year</span><b>' + money.format(r.o) + '</b></div></div>' +
       '<table><tbody>' +
-      '<tr><td><span class="dot s"></span>Initial from super</td><td class="num">' + money.format(r.iS) + '</td></tr>' +
-      '<tr><td><span class="dot o"></span>Initial out of pocket</td><td class="num">' + money.format(r.iP) + '</td></tr>' +
-      '<tr><td><span class="dot s"></span>Ongoing from super</td><td class="num">' + money.format(r.oS) + '</td></tr>' +
-      (r.oF > 0 ? '<tr><td><span class="dot p"></span>Ongoing from investments outside super (1.1%)</td><td class="num">' + money.format(r.oF) + '</td></tr>' : '') +
-      '<tr><td><span class="dot o"></span>Ongoing out of pocket</td><td class="num">' + money.format(r.oP) + ' <span style="color:var(--muted)">(' + money.format(r.oP / 12) + '/mth)</span></td></tr>' +
-      (r.cut > 0 ? '<tr><td>Reduced by the $10,000 cap</td><td class="num">−' + money.format(r.cut) + '</td></tr>' : '') +
+      sub("Initial fee split") + f.init.map(function (x) { return row(x, "Initial"); }).join("") +
+      sub("Ongoing fee split, a year") + f.ong.map(function (x) { return row(x, "Ongoing"); }).join("") +
+      (r.cut > 0 ? '<tr><td>Reduced by the ' + capLabel() + ' cap</td><td class="num">−' + money.format(r.cut) + '</td></tr>' : '') +
       '</tbody></table>';
   }
 
@@ -716,7 +775,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   }
 
   function calc() {
-    var bal = num("balNum");
+    syncClients();
+    var bal = bals();
     MODS.forEach(function (m) { document.getElementById("pr_" + m.id).textContent = money.format(num("mi_" + m.id)) + " + " + (m.id === "inv" ? "1.1%" : money.format(num("mo_" + m.id))) + "/yr"; });
     var ticked = MODS.filter(function (m) { return document.getElementById("c_" + m.id).checked; }).map(function (m) { return m.id; });
     var hasInv = ticked.indexOf("inv") >= 0;
@@ -730,7 +790,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
     if (!ticked.length) {
       verdict.className = "verdict";
-      var so = split(Math.min(bal * I_RATE, I_CAP), bal * O_RATE, bal);
+      var so = split(superInit(bal), superOng(bal), bal);
       verdict.innerHTML = "<strong>Super only: " + money.format(so.i) + " initial, " + money.format(so.o) + " a year</strong>No modules ticked, so the client stays on the super fee, paid from super.";
       document.getElementById("modIncl").innerHTML = inclList([]);
       document.getElementById("modBody").innerHTML = body(so);
@@ -742,7 +802,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       return;
     }
 
-    var mi = Math.min(bal * I_RATE, I_CAP), mo = bal * O_RATE;
+    var mi = superInit(bal), mo = superOng(bal);
     ticked.forEach(function (id) { mi += num("mi_" + id); if (id !== "inv") mo += num("mo_" + id); });
     var mod = split(mi, mo, bal, port);
     document.getElementById("modIncl").innerHTML = inclList(ticked);
@@ -794,8 +854,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
   }
 
   function sync(e) {
-    if (e.target.id === "bal") document.getElementById("balNum").value = e.target.value;
-    else if (e.target.id === "balNum") document.getElementById("bal").value = e.target.value;
+    var m = /^(bal|balNum)(\d)$/.exec(e.target.id);
+    if (m) document.getElementById((m[1] === "bal" ? "balNum" : "bal") + m[2]).value = e.target.value;
     else if (e.target.id === "outBal") document.getElementById("outNum").value = e.target.value;
     else if (e.target.id === "outNum") document.getElementById("outBal").value = e.target.value;
   }
@@ -915,7 +975,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     text("Scoping call script and notes", { size: 17, bold: true, color: NAVY, after: 2 });
     text("Client: " + client, { size: 10.5, bold: true, color: NAVY, after: 0.5 });
     text("Meeting date: " + (document.getElementById("cMeet").value || "-"), { size: 9.5, color: MUTED });
-    text("Super balance used for pricing: " + money.format(num("balNum")) +
+    var pb = bals();
+    text("Number of clients: " + pb.length + "    Super balance" + (pb.length > 1 ? "s" : "") + " used for pricing: " +
+         (pb.length > 1 ? pb.map(function (b, i) { return "Client " + (i + 1) + " " + money.format(b); }).join(", ") : money.format(pb[0])) +
          (tickedIds().indexOf("inv") >= 0 ? "    Investments outside super: " + money.format(num("outNum")) : ""), { size: 9.5, color: MUTED, after: 3 });
     rule();
 
@@ -974,8 +1036,14 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       if (r) {
         say((q.pkg ? "The most cost effective way to go through all of these areas of advice would be to use our " + q.title.replace(/ package$/i, "") + " Package."
                    : "Here is what it would cost to go through these areas of advice.") + " Please think of the cost as the worst case.");
-        var ip = [r.iS ? money.format(r.iS) + " can come from your super" : "", r.iP ? money.format(r.iP) + " is out of pocket" : ""].filter(Boolean).join(", and ");
-        var op = [r.oS ? money.format(r.oS) + " from super" : "", r.oF ? money.format(r.oF) + " from your investments outside super" : "", r.oP ? money.format(r.oP) + " out of pocket" : ""].filter(Boolean).join(", ");
+        var multi = r.iSc.length > 1;
+        var ip = (multi ? r.iSc.map(function (a, i) { return a ? money.format(a) + " from client " + (i + 1) + "'s super" : ""; })
+                        : [r.iS ? money.format(r.iS) + " can come from your super" : ""])
+          .concat([r.iP ? money.format(r.iP) + (multi ? " joint, out of pocket" : " is out of pocket") : ""]).filter(Boolean).join(multi ? ", " : ", and ");
+        var op = (multi ? r.oSc.map(function (a, i) { return a ? money.format(a) + " from client " + (i + 1) + "'s super" : ""; })
+                        : [r.oS ? money.format(r.oS) + " from super" : ""])
+          .concat([r.oF ? money.format(r.oF) + (multi ? " joint, " : " ") + "from your investments outside super" : "",
+                   r.oP ? money.format(r.oP) + (multi ? " joint, out of pocket" : " out of pocket") : ""]).filter(Boolean).join(", ");
         li("Initial advice fee: " + money.format(r.i) + (ip ? " (" + ip + ")" : ""));
         li("Ongoing fee: " + (r.cut > 0 ? "no more than " : "") + money.format(r.o) + " a year" + (op ? " (" + op + ")" : ""));
         say("That's the most it could be. Once we've done our research, if a section of advice doesn't need any changes, we'll let you know and deduct that fee.");
@@ -1073,16 +1141,17 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       text("Covers: super and insurance" + (q.ids.length ? ", " + q.ids.map(function (id) { return byId[id].label.toLowerCase(); }).join(", ") : ""),
            { size: 8.8, color: MUTED, x: M + 2, width: CW - 4, after: 2 });
       qrow("Initial advice fee", money.format(r.i), { bold: true });
-      qrow("From super (super advice fee)", money.format(r.iS), { indent: 4 });
-      qrow("Out of pocket", money.format(r.iP), { indent: 4 });
+      var fr = feeRows(r);
+      fr.init.forEach(function (x) { qrow(x[0] === "From super" ? "From super (super advice fee)" : x[0], money.format(x[1]), { indent: 4 }); });
       q.initItems.forEach(function (it) { qrow("- " + it[0], money.format(it[1]), { indent: 9, size: 9, color: MUTED, gap: 4.4 }); });
       y += 1;
       qrow("Ongoing fee, a year", money.format(r.o), { bold: true });
-      qrow("From super", money.format(r.oS), { indent: 4 });
-      if (r.oF > 0) qrow("From investments outside super (1.1% a year)", money.format(r.oF), { indent: 4 });
-      qrow("Out of pocket", money.format(r.oP) + "  (" + money.format(r.oP / 12) + " a month)", { indent: 4 });
+      fr.ong.forEach(function (x) {
+        qrow(x[0].replace("1.1%)", "1.1% a year)"),
+             money.format(x[1]) + (x[2] === "o" ? "  (" + money.format(x[1] / 12) + " a month)" : ""), { indent: 4 });
+      });
       q.ongItems.forEach(function (it) { qrow("- " + it[0], money.format(it[1]), { indent: 9, size: 9, color: MUTED, gap: 4.4 }); });
-      if (r.cut > 0) qrow("Already reduced by the $10,000 combined cap", "-" + money.format(r.cut), { indent: 4, size: 9, color: MUTED });
+      if (r.cut > 0) qrow("Already reduced by the " + capLabel() + " combined cap", "-" + money.format(r.cut), { indent: 4, size: 9, color: MUTED });
       if (q.pkg && (q.initItems.length || q.ongItems.length)) {
         text("The package's out-of-pocket amounts are shown across its modules in proportion to their individual prices.",
              { size: 8, color: MUTED, after: 1 });
@@ -1121,7 +1190,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var g = document.getElementById("gNotes").value.trim();
     if (g) { ensure(12); text("General notes", { size: 11, bold: true, color: NAVY, after: 1.5 }); text(g, { size: 9.5, after: 3 }); }
     rule();
-    text("Set fees include GST and the super share, charged as today. All ongoing fees combined are capped at $10,000 a year. " +
+    text("Set fees include GST and the super share, charged as today (super initial capped at $4,950 per client). All ongoing fees combined are capped at $10,000 a year per client (" + capLabel() + " here). " +
          "Prices are proposed starting points and must be confirmed in the client's written fee quote. Internal file note, not advice.", { size: 8, color: MUTED });
     var pages = doc.getNumberOfPages();
     for (var p = 1; p <= pages; p++) {
