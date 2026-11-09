@@ -1264,7 +1264,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       head("Next steps");
       sub("About you: what we will need");
       SECTIONS[0].docs.forEach(li);
-      say("After this call I'll email you a list of the documents we need for each of those sections, so you can see exactly what to gather and why. For each one we'll explain what we take from it, so if it's easier you can just tell us the information instead of sending the document. And if there's an area you'd rather we left out, for now or for good, you can tell us that too. If anything is hard to find, just let us know and we can help.");
+      say("After this call I'll email you a list of the documents we need for each of those sections, so you can see exactly what to gather and why. For each one we'll explain what we take from it, so if it's easier you can send a screenshot that shows that information, or just tell us, instead of sending the full document. And if there's an area you'd rather we left out, for now or for good, you can tell us that too. If anything is hard to find, just let us know and we can help.");
       say("Once we have them, we'll book the next meeting. Any questions before we finish?");
 
       head("If they ask about the fee");
@@ -1387,7 +1387,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     lines.push("Thank you for your time today. Below is what we need to prepare your advice, grouped by area. " +
       "For each item we've explained what we take from it and how we use it in your advice, so you can see exactly why we're asking.", "");
     lines.push("For each item, you can choose how to help us:", "");
-    lines.push("1. Send the document. This is usually the quickest option.");
+    lines.push("1. Send the document. This is usually the quickest option. A screenshot or phone photo is fine too " +
+      "(for example from your banking app or a provider's website), as long as it clearly shows the details listed under \"What we take from it\".");
     lines.push("2. Tell us yourself instead. Reply with the details under \"Or just tell us\" and skip the document. " +
       "We may ask to see a document later if something needs checking.");
     lines.push("3. Leave an area out. If you'd rather we didn't look at an area, either for now or at all, let us know. " +
