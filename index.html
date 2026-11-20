@@ -870,58 +870,59 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
           "Partner 1: employment type and rough income",
           "Partner 2: employment type and rough income",
           "Who else advises you (accountant, broker, lawyer)?"],
-      docs: ["Latest tax return or notice of assessment, each partner", "2–3 recent payslips each"],
+      // Lean lists (2026-11-20): ask for a document only when a figure drives the recommendation and the
+      // client can't reasonably tell us. Everything else is a follow-up question, recorded as client-stated.
+      docs: [],
       fu: [] },
     { id: "cash", label: "Cash flow and budgeting",
       q: ["Is there money left over each month, and roughly how much?", "Any large costs in the next 1–3 years?",
           "Any income changes ahead, such as parental leave or a job change?"],
-      docs: ["3 months of statements for every bank and credit card account", "Any budget already kept", "Centrelink income statement, if receiving payments"],
-      fu: ["Emergency buffer they'd be comfortable holding", "Spending they'd like to change", "Irregular costs the statements show"] },
+      docs: ["3 months of statements for your main everyday account (the one your pay goes into)", "Any budget already kept", "Centrelink income statement, if receiving payments"],
+      fu: ["Emergency buffer they'd be comfortable holding", "Spending they'd like to change", "Irregular costs the statements show",
+           "Other accounts and cards: what each is for, rough balances, cards paid off monthly?",
+           "Regular transfers out of the main account: what they are for"] },
     { id: "debt", label: "Mortgage and debt",
       q: ["What debts do you have (type and rough total)?", "Is any fixed rate ending in the next 12 months?", "What is your goal for the debt?"],
-      docs: ["Latest statement for each loan", "Offset and redraw statements", "Credit card statements", "HELP balance from myGov",
-             "Recent property valuation or estimate", "Loan contract for any fixed loan (break costs)"],
-      fu: ["What each loan was used for (tax-deductibility)", "Attitude to debt", "Recent credit applications, arrears or hardship"] },
+      docs: ["Latest statement for each loan (a banking app screenshot is fine)"],
+      fu: ["What each loan was used for (tax-deductibility)", "Attitude to debt", "Recent credit applications, arrears or hardship",
+           "Offset and redraw balances", "Credit card limits and balances", "HELP balance", "Rough value of the home",
+           "Fixed loans: end date, and a break-cost quote only if refinancing"] },
     { id: "prop", label: "Investment property",
       q: ["How many investment properties do you own, or plan to buy?", "Do you plan to hold, sell or buy more?", "Was any property ever your home?"],
-      docs: ["Property manager annual summary or rental statements", "Loan statements", "Depreciation schedule", "Purchase contract and settlement statement",
-             "Rates, strata and landlord insurance notices", "Rental schedule from the last tax return", "Recent valuation"],
-      fu: ["Timing of plans", "Comfort with negative cash flow", "Issues the documents raise, such as land tax"] },
+      docs: ["Latest statement for each investment loan", "Property manager annual summary or rental statements"],
+      fu: ["Timing of plans", "Comfort with negative cash flow", "Issues the documents raise, such as land tax",
+           "Rough value of each property", "Yearly rates, strata, water and landlord insurance", "Depreciation claimed each year (rough)",
+           "Purchase price and date, only if selling is being considered"] },
     { id: "inv", label: "Investments outside super",
       q: ["Roughly what do you hold outside super, and where?", "What is the money for, and when might you need it?", "Do you add to it regularly?"],
-      docs: ["Holdings statements from each platform or broker", "Cost base records (reports for when assets were bought and for how much)",
-             "Margin loan or crypto exchange statements"],
-      fu: ["Risk profile questionnaire for this money", "Investing experience", "Ethical preferences"] },
+      docs: ["Holdings statement (or app screenshot) from each platform or broker"],
+      fu: ["Risk profile questionnaire for this money", "Investing experience", "Ethical preferences",
+           "Rough purchase price and date for anything that might be sold", "Margin loan balance and rough crypto value, if any"] },
     { id: "tax", label: "Tax planning",
       q: ["Is either of you self-employed, or using a trust or company?", "Is either earning over about $250k including super?", "Any large capital gains expected?"],
-      docs: ["Tax returns and notices of assessment, last 2 years, both partners", "Carry-forward contribution figures from myGov", "Super contribution statements",
-             "Private health insurance tax statement", "Trust or company financials, if relevant"],
-      fu: ["Salary packaging offered by the employer", "Income changes coming up", "Points to confirm with the accountant"] },
+      docs: ["Latest notice of assessment, each partner", "Carry-forward contribution figures from myGov (a screenshot is fine)"],
+      fu: ["Salary packaging offered by the employer", "Income changes coming up", "Points to confirm with the accountant",
+           "Super contributions so far this financial year (employer and personal)", "Hospital cover held, each person",
+           "Trust or company: name, what it holds, rough yearly distributions"] },
     { id: "edu", label: "Education funding",
       q: ["Children's ages, current and planned schools, and rough annual fees", "How are fees paid now?",
           "If you died or couldn't work, would you want the children kept at their current schools to Year 12?"],
-      docs: ["School fee schedules (this year plus published increases)", "Statements for education bonds, investment bonds or school savings"],
-      fu: ["Grandparent help: amount, frequency, their circumstances", "Discount for paying fees in advance", "University or boarding plans", "Investment risk for this money"] },
+      docs: [],
+      fu: ["Grandparent help: amount, frequency, their circumstances", "Discount for paying fees in advance", "University or boarding plans", "Investment risk for this money",
+           "Expected yearly fee increases", "Balance and type of any education bonds, investment bonds or school savings"] },
     { id: "est", label: "Wider estate planning",
       q: ["Do you have wills and powers of attorney, and roughly how old are they?", "Is there a blended family, or a dependant with special needs?", "Any trusts or companies?"],
-      docs: ["Current wills and powers of attorney", "Guardianship documents", "Super nomination confirmations", "Insurance policy schedules",
-             "Trust deeds and company constitutions", "Property titles"],
-      fu: ["Guardians they would name", "Their solicitor", "Wishes and family dynamics (meeting 2, face to face)"] }
+      docs: ["Current wills, if you have them"],
+      fu: ["Guardians they would name", "Their solicitor", "Wishes and family dynamics (meeting 2, face to face)",
+           "Powers of attorney: who, and roughly when", "Super nominations on each fund (we can check with the fund)",
+           "How each property is owned", "Trusts or companies: who controls them and who benefits"] }
   ];
   // ---------- Reverse fact find: what each document gives us, why, and what the client can tell us instead ----------
   // DOCINFO[document] = [what we take from it (dot points), how we use it, or just tell us]
   var DOCINFO = {
-    "Latest tax return or notice of assessment, each partner": [
-      ["Taxable income", "Tax paid", "Deductions claimed", "Other income (rent, dividends, business)"],
-      "To set your marginal tax rate, which drives almost every recommendation: where money is held, whose name it's in, and whether super contributions make sense.",
-      "Each person's taxable income for last year and any income other than salary."],
-    "2–3 recent payslips each": [
-      ["Current salary", "How often you're paid", "Tax withheld", "Salary sacrifice or extra super already going in"],
-      "To confirm your take-home pay for the cash flow, and to check your contribution caps before we suggest any extra super.",
-      "Each person's gross salary, take-home pay per pay, and any salary sacrifice amount."],
-    "3 months of statements for every bank and credit card account": [
-      ["Regular income", "Everyday spending", "Recurring bills and subscriptions"],
-      "To build a 12-month picture of where your money goes, and work out what you can realistically put toward your goals.",
+    "3 months of statements for your main everyday account (the one your pay goes into)": [
+      ["Regular income", "Everyday spending", "Recurring bills and subscriptions", "Regular transfers to other accounts"],
+      "To build a 12-month picture of where your money goes, and work out what you can realistically put toward your goals. We'll ask you about any other accounts rather than need their statements.",
       "Your monthly take-home income and a rough monthly figure for housing, bills, groceries, transport, kids and discretionary spending."],
     "Any budget already kept": [
       ["How you already track your spending", "The categories and limits you use"],
@@ -931,122 +932,34 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       ["Which payments you receive", "How much, and how often"],
       "Some strategies change the income or assets Centrelink counts, so we check we won't reduce your payments.",
       "The payment type, the fortnightly amount and who receives it."],
-    "Latest statement for each loan": [
+    "Latest statement for each loan (a banking app screenshot is fine)": [
       ["Lender", "Balance", "Interest rate", "Repayment amount", "Fixed or variable, and any fixed end date"],
       "To compare your rate with the market, see how fast you're paying it down, and decide what to pay off first.",
       "For each loan: the lender, balance, rate, monthly repayment and when any fixed rate ends."],
-    "Offset and redraw statements": [
-      ["Offset and redraw balances", "How the balance moves through the month"],
-      "Money in offset reduces interest, so we look at whether your savings are working as hard as they can.",
-      "The current offset and redraw balances for each loan."],
-    "Credit card statements": [
-      ["Card limits", "Balances", "Interest rates", "Whether the balance is cleared each month"],
-      "Card debt is usually the most expensive debt you have, and limits count against borrowing power even when unused.",
-      "Each card's limit, the usual balance, and whether you pay it off in full."],
-    "HELP balance from myGov": [
-      ["HELP (HECS) balance"],
-      "Repayments come out through tax, and the balance affects borrowing power, so we decide whether paying it early is worth it.",
-      "The current balance for each person."],
-    "Recent property valuation or estimate": [
-      ["Current value of your home"],
-      "To work out your equity and loan-to-value ratio, which affects refinancing options and what you could borrow against.",
-      "Your best estimate of its value, or a recent online estimate."],
-    "Loan contract for any fixed loan (break costs)": [
-      ["Fixed rate and end date", "How break costs are worked out"],
-      "If changing loans makes sense, we need to know what it would cost to leave the fixed rate early.",
-      "The fixed rate, its end date, and the lender's break-cost quote if you have one."],
+    "Latest statement for each investment loan": [
+      ["Balance", "Interest rate", "Repayment type (interest-only or principal and interest)"],
+      "To check the loan is structured for tax and cash flow, and how interest-only periods affect you.",
+      "For each investment loan: lender, balance, rate, repayment type and any interest-only end date."],
     "Property manager annual summary or rental statements": [
       ["Rent received", "Management fees", "Property expenses"],
       "To work out what the property really earns after costs, and whether it's paying its way.",
       "Weekly rent, how many weeks a year it's let, and the main yearly costs."],
-    "Loan statements": [
-      ["Balance", "Interest rate", "Repayment type (interest-only or principal and interest)"],
-      "To check the loan is structured for tax and cash flow, and how interest-only periods affect you.",
-      "For each investment loan: lender, balance, rate, repayment type and any interest-only end date."],
-    "Depreciation schedule": [
-      ["Depreciation on the building", "Depreciation on fittings and fixtures"],
-      "These are non-cash deductions, so they change the after-tax return of the property.",
-      "Whether you have one, and roughly what you claim each year."],
-    "Purchase contract and settlement statement": [
-      ["Purchase price", "Purchase date", "Buying costs (stamp duty, legal fees)", "Whose name it's in"],
-      "These set the cost base for capital gains tax if you sell, and show how the purchase was funded.",
-      "The purchase price, date, stamp duty, and whose name it's in."],
-    "Rates, strata and landlord insurance notices": [
-      ["Council rates", "Strata fees", "Landlord insurance"],
-      "To complete the true cost of ownership and check you're covered.",
-      "The yearly amounts for council rates, strata, water and landlord insurance."],
-    "Rental schedule from the last tax return": [
-      ["Rental income declared", "Deductions claimed", "Net rental profit or loss"],
-      "To see how the property affects your tax, and check nothing is being missed.",
-      "Last year's net rental profit or loss."],
-    "Recent valuation": [
-      ["Current value of the property"],
-      "To work out equity, the capital gain to date, and options to sell, hold or borrow against it.",
-      "Your best estimate, or a recent online estimate."],
-    "Holdings statements from each platform or broker": [
+    "Holdings statement (or app screenshot) from each platform or broker": [
       ["What you own", "Where it's held", "Current value", "Whose name it's in"],
       "To check the mix suits your risk profile and goals, spot overlap and fees, and decide whether to consolidate.",
       "A list of what you hold (shares, funds, term deposits), the rough value of each, and whose name it's in."],
-    "Cost base records (reports for when assets were bought and for how much)": [
-      ["What you paid for each investment", "When you bought it"],
-      "Selling or moving investments can trigger capital gains tax, so we need these before suggesting any changes.",
-      "Roughly what you paid and when, for anything we might sell. We can often get this from the platform with your permission."],
-    "Margin loan or crypto exchange statements": [
-      ["Margin loan balance and lender", "Crypto holdings and values"],
-      "Gearing raises risk and needs to fit your risk profile; crypto has its own tax and risk treatment.",
-      "The margin loan balance and the rough value of any crypto."],
-    "Tax returns and notices of assessment, last 2 years, both partners": [
-      ["Taxable income for each year", "Deductions claimed", "Tax paid", "Any unusual or one-off items"],
-      "To find tax savings, such as who should own new investments, and to check for unusual years.",
-      "Each person's taxable income for the last two years and any large one-off items."],
-    "Carry-forward contribution figures from myGov": [
+    "Latest notice of assessment, each partner": [
+      ["Taxable income", "Tax paid", "Other income (rent, dividends, business)"],
+      "To set your marginal tax rate, which drives the tax recommendations: where money is held, whose name it's in, and whether super contributions make sense.",
+      "Each person's taxable income for last year and any income other than salary."],
+    "Carry-forward contribution figures from myGov (a screenshot is fine)": [
       ["Unused concessional (before-tax) cap from earlier years", "Your total super balance"],
       "This can let you make a larger tax-deductible super contribution in one year, often a big tax saving.",
       "Just log in to myGov and send us the figure shown under 'carry-forward concessional contributions', or let us know to help you find it."],
-    "Super contribution statements": [
-      ["Employer contributions this year", "Personal and salary sacrifice contributions this year"],
-      "So any extra contribution we suggest stays within the caps and avoids extra tax.",
-      "Your employer and any personal contributions so far this financial year."],
-    "Private health insurance tax statement": [
-      ["Whether you hold hospital cover", "Rebate received"],
-      "Without hospital cover, higher earners pay the Medicare levy surcharge, so we check whether cover saves you money.",
-      "Whether each person has hospital cover."],
-    "Trust or company financials, if relevant": [
-      ["Income", "Distributions or dividends paid", "Assets held"],
-      "Structures change who pays tax on what, so we include them in the overall plan.",
-      "The structure's name, what it holds, and roughly what it pays out each year."],
-    "School fee schedules (this year plus published increases)": [
-      ["Current fees", "Expected yearly increases"],
-      "To project the total cost to Year 12 and plan how to fund it.",
-      "Each child's school, year level and current yearly fees."],
-    "Statements for education bonds, investment bonds or school savings": [
-      ["Balance set aside for education", "How it's invested"],
-      "So we count what's already there before suggesting anything new.",
-      "The type of account and its current balance."],
-    "Current wills and powers of attorney": [
-      ["Who inherits", "Who acts for you (executor and attorney)", "When they were last updated"],
+    "Current wills, if you have them": [
+      ["Who inherits", "Who acts as executor", "When it was last updated"],
       "To check your plan passes your assets the way you want, and flag anything outdated.",
-      "Whether each of you has a will and powers of attorney, roughly when they were done, and the main wishes."],
-    "Guardianship documents": [
-      ["Who you've named as guardians"],
-      "So any insurance and estate recommendations support the people who'd be looking after them.",
-      "Whether guardians are named, and who."],
-    "Super nomination confirmations": [
-      ["Who receives your super if you die", "Whether the nomination is binding", "Whether it's still current"],
-      "Super doesn't automatically follow your will, so we check it goes where you intend.",
-      "Who is nominated on each super fund, and whether it's binding. We can often check this with the fund for you."],
-    "Insurance policy schedules": [
-      ["Cover types", "Sums insured", "Policy owners", "Premiums"],
-      "To make sure insurance pays out to the right people in a tax-effective way.",
-      "For each policy: the type, amount, owner and premium."],
-    "Trust deeds and company constitutions": [
-      ["Who controls the trust or company", "Who benefits", "What happens to it on death"],
-      "Assets in structures don't pass under your will, so we look at control and succession separately.",
-      "The structure's name, who controls it, and who benefits."],
-    "Property titles": [
-      ["Whose name each property is in", "How it's held (jointly or as tenants in common)"],
-      "Ownership decides whether a property passes automatically to a co-owner or through your will.",
-      "How each property is owned and in whose names."]
+      "Whether each of you has a will, roughly when it was done, who the executor is, and the main wishes."]
   };
   // Section-level: why we look at this area, and what leaving it out means.
   var SECINFO = {
@@ -1075,6 +988,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       h += '<div class="qa"><label for="q_' + sec.id + '_' + i + '">' + esc(q) + '</label><textarea id="q_' + sec.id + '_' + i + '" rows="2"></textarea></div>';
     });
     h += '<div class="ncols"><div><p class="label">Documents to request</p>';
+    if (!sec.docs.length) h += '<p class="empty">None needed: ask on the follow-up call instead.</p>';
     sec.docs.forEach(function (d, i) {
       h += '<label class="doc"><input type="checkbox" id="d_' + sec.id + '_' + i + '"><span>' + esc(d) + '</span></label>';
     });
@@ -1147,11 +1061,11 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     // ===== Part 1: adviser talking points (script) =====
     (function () {
       var HELP = {
-        cash: "We're going to ask you to be a little bit nosy: we'd like to look at your bank statements for the last three months. That lets us extrapolate roughly what twelve months looks like, based on your everyday spending. There may be big payments through the year that aren't captured in those statements. We can pick those up on a second call if there are gaps, but if you think of any when you get our email, feel free to let us know.",
+        cash: "We're going to ask you to be a little bit nosy: we'd like to look at the last three months of statements for your main everyday account, the one your pay goes into. That lets us extrapolate roughly what twelve months looks like, based on your everyday spending. For any other accounts or cards, we'll just ask you a few quick questions rather than need their statements. There may be big payments through the year that aren't captured in those statements. We can pick those up on a second call if there are gaps, but if you think of any when you get our email, feel free to let us know.",
         debt: "We'll look at how much you're paying off, whether you have offset or redraw accounts, and what mechanisms you have to pay things down sooner, based on what we find in your cash flow. Or you may just be on a higher rate than we'd expect, and we can refer you to someone we know who can help with that.",
         prop: "This is about the viability of an investment property: the savings you'd need, the type of borrowing, who would own it and how. We'll get an idea of what you're looking to do. Or, if you already have one, we'll look at whether it's structured the right way, whether there's something you can do about it, and whether it's still a viable investment for your goals.",
         inv: "This might be spare cash you have lying around: what's in your offset or redraw right now, and whether it's working well for you. Is it in term deposits because you're a bit worried about risk? Are there other options, and are you owning it the way you should be? We can also help put your investments in one place, professionally managed if that's the way you want to go. That's our preference, because a professional investment manager looking after all of your wealth can make a big difference.",
-        tax: "This one sounds straightforward, but it's more in-depth. We look at all of your expenses, how you own everything, and how much tax you and your partner pay each year. Are there ways to reduce it, and to be more effective in how we take money into the bank account to pay for expenses and investing? We'll look at your tax returns and at what your accountant is working with. If you don't have an accountant, part of the strategy might be referring you to one we work with.",
+        tax: "This one sounds straightforward, but it's more in-depth. We look at all of your expenses, how you own everything, and how much tax you and your partner pay each year. Are there ways to reduce it, and to be more effective in how we take money into the bank account to pay for expenses and investing? We'll look at your latest notice of assessment and at what your accountant is working with. If you don't have an accountant, part of the strategy might be referring you to one we work with.",
         edu: "A lot of people come to us worried about school fees. There are different ways to deal with that. It might be working on your cash flow and budgeting, and it might be certain products like education bonds. They're not suitable for everyone, but for the right people they can be real lifesavers for tax, and for being ready when the fees come due.",
         est: "This means looking beyond your super: how assets are held, how they'll be passed on, and the tax-effective treatment of all of that."
       };
@@ -1234,6 +1148,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         if (benefit) tip("If they ask: " + benefit);
         if (fee) tip(fee);
         if (docs.length) { text("What we will need:", { size: 9, bold: true, color: MUTED, x: M + 2, after: 0.6 }); docs.forEach(function (d) { text("- " + d, { size: 9, color: MUTED, x: M + 6, width: CW - 6, after: 0.4 }); }); y += 1.5; }
+        else if (label !== "Super and insurance") { text("What we will need: no documents. We'll ask on the follow-up call.", { size: 9, color: MUTED, x: M + 2, after: 1.5 }); }
       }
       area("Super and insurance", "Super we already know. We'll go over your risk profile and make sure your investments line up with your beliefs, and we'll look into the underlying performance as well. You can call us anytime about those investments. That's the 1.1% ongoing.", [], BENEFIT.super, "");
       tk.forEach(function (id) {
@@ -1263,8 +1178,9 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
 
       head("Next steps");
       sub("About you: what we will need");
-      SECTIONS[0].docs.forEach(li);
-      say("After this call I'll email you a list of the documents we need for each of those sections, so you can see exactly what to gather and why. For each one we'll explain what we take from it, so if it's easier you can send a screenshot that shows that information, or just tell us, instead of sending the full document. And if there's an area you'd rather we left out, for now or for good, you can tell us that too. If anything is hard to find, just let us know and we can help.");
+      if (SECTIONS[0].docs.length) SECTIONS[0].docs.forEach(li);
+      else li("No documents for this part: we'll use what you've told us today.");
+      say("After this call I'll email you a short list of the few documents we need for each of those sections, so you can see exactly what to gather and why. For each one we'll explain what we take from it, so if it's easier you can send a screenshot that shows that information, or just tell us, instead of sending the full document. Anything else we need, we'll ask you on a quick follow-up call. And if there's an area you'd rather we left out, for now or for good, you can tell us that too. If anything is hard to find, just let us know and we can help.");
       say("Once we have them, we'll book the next meeting. Any questions before we finish?");
 
       head("If they ask about the fee");
@@ -1336,6 +1252,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
         text(a || "(not answered)", { size: 9.5, color: a ? [40, 45, 60] : MUTED, x: M + 3, width: CW - 3, after: 2 });
       });
       text("Documents to request", { size: 9.5, bold: true, after: 0.8 });
+      if (!sec.docs.length) text("None needed: ask on the follow-up call instead.", { size: 9.5, color: MUTED, x: M + 3, width: CW - 3, after: 0.6 });
       sec.docs.forEach(function (d, i) {
         var req = document.getElementById("d_" + sec.id + "_" + i).checked;
         text((req ? "[x] " : "[ ] ") + d + (req ? " (requested)" : ""), { size: 9.5, x: M + 3, width: CW - 3, after: 0.6 });
@@ -1403,9 +1320,16 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       groups.push({ id: sec.id, label: sec.always ? "About you" : sec.label, all: all, picked: picked });
     });
     var lines = [], name = document.getElementById("cName").value.trim();
+    var any = groups.some(function (g) { return (anyTicked ? g.picked : g.all).length; });
     lines.push("Hi " + (name || "[client name]") + ",", "");
-    lines.push("Thank you for your time today. Below is what we need to prepare your advice, grouped by area. " +
+    if (!any) {
+      lines.push("Thank you for your time today. We don't need any documents from you for the areas we're looking at. " +
+        "We'll gather the few details we still need on a quick follow-up call, and rough figures are fine.", "", "Kind regards,");
+      return { text: lines.join("\n"), anyTicked: anyTicked };
+    }
+    lines.push("Thank you for your time today. Below are the few documents we need to prepare your advice, grouped by area. " +
       "For each item we've explained what we take from it and how we use it in your advice, so you can see exactly why we're asking.", "");
+    lines.push("Anything else we need, such as rough balances for your other accounts, we'll ask you on a quick follow-up call, so there's nothing else to send.", "");
     lines.push("For each item, you can choose how to help us:", "");
     lines.push("1. Send the document. This is usually the quickest option. A screenshot or phone photo is fine too " +
       "(for example from your banking app or a provider's website), as long as it clearly shows the details listed under \"What we take from it\".");
